@@ -16,10 +16,9 @@ struct compact_list;
 struct node
 {
     element_t     value;
-    node*         next;
-    node*         prev;
+    list_iterator next;
+    list_iterator prev;
     int           is_free;
-    compact_list* list;
 };
 
 /**
@@ -28,23 +27,24 @@ struct node
  */
 struct compact_list
 {
-    node*   nodes;
-    node*   free;
-    size_t  size;
-    size_t  capacity;
+    node*         nodes;
+    list_iterator free;
+    size_t        size;
+    size_t        capacity;
+    int           is_linear;
 };
 
 /**
  * @brief 
  * Iterator over `compact_list` elements
  */
-typedef element_t* list_iterator;
+typedef size_t list_iterator;
 
 /**
  * @brief Construct `compact_list` instance
  * @return Constructed instance
  */
-[[__attrubute__(nodiscard)]]
+[[nodiscard]]
 compact_list list_ctor(void);
 
 /**
@@ -58,7 +58,7 @@ void list_dtor(compact_list* list);
  * @brief Get iterator to first list element
  * 
  * @param[in] list `compact_list` instance
- * @return `list_iterator` or `NULL` if list is empty
+ * @return `list_iterator` or 0 if list is empty
  */
 list_iterator list_begin(const compact_list* list);
 
@@ -66,45 +66,49 @@ list_iterator list_begin(const compact_list* list);
  * @brief Get iterator to last list element
  * 
  * @param[in] list `compact_list` instance
- * @return `list_iterator` or `NULL` if list is empty
+ * @return `list_iterator` or 0 if list is empty
  */
 list_iterator list_end(const compact_list* list);
 
 /**
  * @brief Get iterator to next list element
  * 
+ * @param[in] list `compact_list` instance
  * @param[in] iterator Iterator to current list element
- * @return `list_iterator` or `NULL` if iterator pointed to last
+ * @return `list_iterator` or 0 if iterator pointed to last
  * list element
  */
-list_iterator next_element(const list_iterator iterator);
+list_iterator next_element(const compact_list* list, const list_iterator iterator);
 
 /**
  * @brief Get iterator to previous list element
  * 
+ * @param[in] list `compact_list` instance
  * @param[in] iterator Iterator to current list element
- * @return `list_iterator` or `NULL` if iterator pointed to first
+ * @return `list_iterator` or 0 if iterator pointed to first
  * list element
  */
-list_iterator prev_element(const list_iterator iterator);
+list_iterator prev_element(const compact_list* list, const list_iterator iterator);
 
 /**
  * @brief Add element after current
  * 
+ * @param[in] list `compact_list` instance
  * @param[in] iterator Iterator to current list element
  * @param[in] value Added value
  * @return Iterator to added list element
  */
-list_iterator insert_after(list_iterator iterator, element_t value);
+list_iterator insert_after(compact_list* list, list_iterator iterator, element_t value);
 
 /**
  * @brief Add element before current
  * 
+ * @param[in] list `compact_list` instance
  * @param[in] iterator Iterator to current list element
  * @param[in] value Added value
  * @return Iterator to added list element
  */
-list_iterator insert_before(list_iterator iterator, element_t value);
+list_iterator insert_before(compact_list* list, list_iterator iterator, element_t value);
 
 /**
  * @brief Add element after last
@@ -122,16 +126,26 @@ list_iterator push_back(compact_list* list, element_t value);
  * @param[in] value Added value
  * @return Iterator to added list element
  */
-list_iterator push_front(compact_list* list);
+list_iterator push_front(compact_list* list, element_t value);
+
+/**
+ * @brief Get element value by iterator
+ * 
+ * @param[in] list `compact_list` instance
+ * @param[in] iterator Iterator to list element
+ * @return Element value
+ */
+element_t get_element(const compact_list* list, const list_iterator iterator);
 
 /**
  * @brief Erase element from list
  * 
+ * @param[in] list `compact_list` instance
  * @param[in] iterator Iterator to deleted element
  * 
  * @warning Call to this function invalidates `iterator`
  */
-void erase_element(list_iterator iterator);
+void erase_element(compact_list* list, list_iterator iterator);
 
 /**
  * @brief Erase last element from list
@@ -151,6 +165,32 @@ void pop_back(compact_list* list);
  * @warning Call to this function invalidates all iterators,
  * pointing to list start
  */
-void push_back(compact_list* list);
+void pop_front(compact_list* list);
+
+/**
+ * @brief Sort list by element order.
+ * 
+ * @param[in] list `compact_list` instance
+ */
+
+
+/**
+ * @brief Get element by its number in list
+ * 
+ * @param[in] list `compact_list` instance
+ * @param[in] num Element number in list
+ * @return Iterator to element
+ * 
+ * @warning This function can be called only on linearized lists
+ */
+list_iterator element_by_number(const compact_list* list, size_t num);
+
+void* abstract_linked_list_iterator_object_getter_factory_builder_getter_get_builder(void*, void*);
+
+void* abstract_linked_list_iterator_object_getter_factory_builder_build_factory(void*);
+
+void* abstract_linked_list_iterator_object_getter_factory_make_object_getter(void*);
+
+void* abstract_linked_list_iterator_object_getter_get_abstract_iterator_object(void*);
 
 #endif
