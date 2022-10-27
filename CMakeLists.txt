@@ -41,10 +41,12 @@ set(CMAKE_LINKER_FLAGS "${CMAKE_CXX_FLAGS}-D _DEBUG -ggdb3 -std=c++2a -O0 -Wall 
 
 add_subdirectory(lib/logger)
 
+add_subdirectory(lib/graphs)
+
 add_subdirectory(lib/list)
 
 add_subdirectory(src)
 
 add_custom_target(run
     COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && ${CMAKE_CURRENT_BINARY_DIR}/src/list
-    DEPENDS stack)
+    DEPENDS list)

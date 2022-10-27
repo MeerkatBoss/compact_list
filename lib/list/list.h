@@ -7,6 +7,12 @@
 typedef double element_t;
 #endif
 
+/**
+ * @brief 
+ * Iterator over `compact_list` elements
+ */
+typedef size_t list_iterator;
+
 struct compact_list;
 
 /**
@@ -35,12 +41,6 @@ struct compact_list
 };
 
 /**
- * @brief 
- * Iterator over `compact_list` elements
- */
-typedef size_t list_iterator;
-
-/**
  * @brief Construct `compact_list` instance
  * @return Constructed instance
  */
@@ -53,6 +53,22 @@ compact_list list_ctor(void);
  * @param[inout] list `compact_list` instance to be freed
  */
 void list_dtor(compact_list* list);
+
+/**
+ * @brief Check list integrity
+ * 
+ * @param[in] list `compact_list` instance
+ * @return 1 upon successful check, 0 otherwise
+ */
+int list_check(compact_list* list);
+
+/**
+ * @brief Dump stack contents to svg file
+ * 
+ * @param[in] list `compact_list` instance
+ * @param[in] filename Output file name
+ */
+void list_dump(compact_list* list, const char* filename);
 
 /**
  * @brief Get iterator to first list element
@@ -172,7 +188,7 @@ void pop_front(compact_list* list);
  * 
  * @param[in] list `compact_list` instance
  */
-
+void linearize(compact_list* list);
 
 /**
  * @brief Get element by its number in list

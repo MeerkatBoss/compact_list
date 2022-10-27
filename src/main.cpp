@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "logger.h"
+#include "list.h"
 
 int main()
 {
@@ -11,6 +12,17 @@ int main()
         .logging_level = LOG_ERROR,
         .settings_mask = LGS_KEEP_OPEN | LGS_USE_ESCAPE
     });
-    puts("Hello, stack!");
+
+    compact_list list = list_ctor();
+
+    push_back(&list, 10);
+    list_iterator second = push_back(&list, 20);
+    push_back(&list, 30);
+    pop_front(&list);
+    insert_after(&list, second, 40);
+    list_dump(&list, "tmp.png");
+
+    list_dtor(&list);
+
     return 0;
 }

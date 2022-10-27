@@ -3,10 +3,31 @@
 
 #include "list.h"
 #include "logger.h"
+#include "graph.h"
 
 static const size_t default_cap_  = 16;
 static const size_t growth_coeff_ = 2;
 static const element_t POISON     = (element_t) 0xDEADBEEF;
+
+#define BGCOLOR "lightsteelblue1"
+#define NODE_COLOR "springgreen"
+#define NODE_HEAD_COLOR "springgreen4"
+#define FREE_COLOR "deepskyblue"
+#define FREE_HEAD_COLOR "dodgerblue2"
+#define HEAD_FONT_COLOR "azure"
+#define BORDER_COLOR "darkslategray"
+#define NEXT_EDGE_COLOR "deeppink"
+#define PREV_EDGE_COLOR "darkviolet"
+#define FREE_EDGE_COLOR "midnightblue"
+
+#define NODE_FORMAT(bg, head) \
+                        "<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\" BGCOLOR=\"" bg "\">\n"\
+                        "<TR><TD ALIGN=\"CENTER\" COLSPAN=\"2\" BGCOLOR=\"" head "\"><FONT COLOR=\"" HEAD_FONT_COLOR "\"><B>node #%zu</B></FONT></TD></TR>\n"\
+                        "<TR><TD COLSPAN=\"2\"><I>value: </I> %lg</TD></TR>\n"\
+                        "<TR><TD><I>next: </I>%zu</TD><TD><I>prev: </I>%zu</TD></TR>\n"\
+                        "</TABLE>"
+
+#define NODE_ARGS(i, node) i, node.value, node.next, node.prev
 
 static void try_shrink_list(compact_list* list);
 static void try_grow_list(compact_list* list);
@@ -39,21 +60,21 @@ compact_list list_ctor(void)
     LOG_ASSERT(nodes != NULL, return {});
 
     nodes[0] = {
-        .value   = -1,
-        .next    = 0,
-        .prev    = 0,
+        .value   = (element_t) -1,
+        .next    = (list_iterator)0,
+        .prev    = (list_iterator)0,
         .is_free = 0
     };
     for (size_t i = 1; i < default_cap_; i++)
         nodes[i] = {
-            .value   = -1,
-            .next    = (i + 1) % default_cap_,
-            .prev    = 0,
+            .value   = (element_t) -1,
+            .next    = (list_iterator) ((i + 1) % default_cap_),
+            .prev    = (list_iterator) 0,
             .is_free = 1
         };
     return {
         .nodes    = nodes,
-        .free     = 1,
+        .free     = (list_iterator) 1,
         .size     = 0,
         .capacity = default_cap_,
         .is_linear= 1
@@ -100,7 +121,7 @@ list_iterator prev_element(const compact_list* list, const list_iterator iterato
 
 list_iterator insert_after(compact_list* list, list_iterator iterator, element_t value)
 {
-    LOG_ASSERT(iterator != 0, return 0);
+    //LOG_ASSERT(iterator != 0, return 0);
     LOG_ASSERT(list != NULL, return 0);
     LOG_ASSERT(list->nodes != NULL, return 0);
 
@@ -129,7 +150,7 @@ list_iterator insert_after(compact_list* list, list_iterator iterator, element_t
 
 list_iterator insert_before(compact_list* list, list_iterator iterator, element_t value)
 {
-    LOG_ASSERT(iterator != 0, return 0);
+    //LOG_ASSERT(iterator != 0, return 0);
     LOG_ASSERT(list != NULL, return 0);
     LOG_ASSERT(list->nodes != NULL, return 0);
 
@@ -259,6 +280,83 @@ list_iterator element_by_number(const compact_list* list, size_t num)
     return list_begin(list) + num;
 }
 
+int list_check(compact_list* list)
+{
+    LOG_ASSERT(list != NULL, return 0);
+    LOG_ASSERT(list->nodes != NULL, return 0);
+    LOG_ASSERT(list->free != 0, return 0);
+    LOG_ASSERT(list->size+2 <= list->capacity, return 0);
+    LOG_ASSERT(list->capacity >= default_cap_, return 0);
+
+    list_iterator last = 0;
+    list_iterator cur = list_begin(0);
+    for (size_t i = 0; i < list->size; i++)
+    {
+        LOG_ASSERT(list->nodes[cur].prev == last, return 0);
+        LOG_ASSERT(!list->nodes[cur].is_free, return 0);
+
+        last = cur;
+        cur = next_element(list, cur);
+    }
+
+    LOG_ASSERT(cur == 0, return 0);
+
+    cur = list->free;
+    for (size_t i = list->size + 1; i < list->capacity; i++)
+    {
+        LOG_ASSERT(list->nodes[cur].prev == 0, return 0);
+        LOG_ASSERT(list->nodes[cur].is_free, return 0);
+        
+        cur = next_element(list, cur);
+    }
+
+    LOG_ASSERT(cur == 0, return 0);
+
+    return 1;
+}
+
+void list_dump(compact_list* list, const char* filename)
+{
+    graph_builder builder = get_builder();
+    add_property(&builder, "bgcolor=%s", BGCOLOR);
+    add_property(&builder, "node [shape=plaintext color=%s]", BORDER_COLOR);
+    
+    size_t *node_num = (size_t*) calloc(list->capacity, sizeof(*node_num));
+
+    for (size_t i = 0; i < list->capacity; i++)
+    {
+        if (list->nodes[i].is_free)
+            node_num[i] = add_node(&builder,
+                "label=<"NODE_FORMAT(FREE_COLOR, FREE_HEAD_COLOR)">",
+                NODE_ARGS(i, list->nodes[i]));
+        else
+            node_num[i] = add_node(&builder,
+                "label=<"NODE_FORMAT(NODE_COLOR, NODE_HEAD_COLOR)">",
+                NODE_ARGS(i, list->nodes[i]));
+    }
+
+    for (size_t i = 0; i < list->capacity; i++)
+    {
+        if (i + 1 < list->capacity)
+            add_edge(&builder, node_num[i], node_num[i + 1], "weight=999999 color=none");
+        if (list->nodes[i].is_free)
+        {
+            add_edge(&builder, node_num[i], node_num[list->nodes[i].next],
+                "weight=0 color=%s", FREE_EDGE_COLOR);
+            continue;
+        }
+        add_edge(&builder, node_num[i], node_num[list->nodes[i].next],
+            "weight=0 color=%s", NEXT_EDGE_COLOR);
+        add_edge(&builder, node_num[i], node_num[list->nodes[i].prev],
+            "weight=0 color=%s", PREV_EDGE_COLOR);
+
+    }
+
+    draw(&builder, filename);
+    builder_dtor(&builder);
+    free(node_num);
+}
+
 void* abstract_linked_list_iterator_object_getter_factory_builder_getter_get_builder(void* param1, void* param2)
 {
     builder* result = (builder*)calloc(1, sizeof(*result));
@@ -310,6 +408,9 @@ void* abstract_linked_list_iterator_object_getter_get_abstract_iterator_object(v
 static void try_shrink_list(compact_list* list)
 {
     if (!list->is_linear) return;
+    if (list->capacity <= default_cap_) return;
+    if ((list->size+2)*growth_coeff_ <= default_cap_) return;
+
     if ((list->size+2) * growth_coeff_ * growth_coeff_ > list->capacity)
         return;
 
