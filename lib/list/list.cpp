@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 
 #include "list.h"
@@ -7,7 +8,7 @@
 
 static const size_t default_cap_  = 16;
 static const size_t growth_coeff_ = 2;
-static const element_t POISON     = (element_t) 0xDEADBEEF;
+static const element_t POISON     = NAN;
 
 #define BGCOLOR "lightsteelblue1"
 #define NODE_COLOR "springgreen"
@@ -60,14 +61,14 @@ compact_list list_ctor(void)
     LOG_ASSERT(nodes != NULL, return {});
 
     nodes[0] = {
-        .value   = (element_t) -1,
+        .value   = (element_t) POISON,
         .next    = (list_iterator)0,
         .prev    = (list_iterator)0,
         .is_free = 0
     };
     for (size_t i = 1; i < default_cap_; i++)
         nodes[i] = {
-            .value   = (element_t) -1,
+            .value   = (element_t) POISON,
             .next    = (list_iterator) ((i + 1) % default_cap_),
             .prev    = (list_iterator) 0,
             .is_free = 1
@@ -239,14 +240,14 @@ void linearize(compact_list* list)
     size_t cnt = 1;
     for (list_iterator it = list_begin(list); it != 0; it = next_element(list, it), cnt++)
     {
-        list->nodes[it].next = cnt;
+        list->nodes[it].prev = cnt;
     }
     for (size_t i = 1; i < list->capacity; i++)
     {
-        while(!list->nodes[i].is_free && list->nodes[i].next != i)
+        while(!list->nodes[i].is_free && list->nodes[i].prev != i)
         {
-            size_t nxt = list->nodes[i].next;
-            memswap(&list->nodes[i], &list->nodes[nxt], sizeof(node));
+            size_t prv = list->nodes[i].prev;
+            memswap(&list->nodes[i], &list->nodes[prv], sizeof(node));
         }
     }
 
@@ -348,7 +349,7 @@ void list_dump(compact_list* list, const char* filename)
         add_edge(&builder, node_num[i], node_num[list->nodes[i].next],
             "weight=0 color=%s", NEXT_EDGE_COLOR);
         add_edge(&builder, node_num[i], node_num[list->nodes[i].prev],
-            "weight=0 color=%s", PREV_EDGE_COLOR);
+            "weight=0 color=%s style=dashed", PREV_EDGE_COLOR);
 
     }
 

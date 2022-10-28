@@ -36,6 +36,7 @@ void build(graph_builder* builder)
 
     fputc('}', builder->stream);
     builder->is_built = 1;
+    fflush(builder->stream);
 }
 
 static const char* get_file_name(FILE* stream);
@@ -47,7 +48,7 @@ void draw(graph_builder* builder, const char* filename)
     if (!builder->is_built) build(builder);
 
     //const char *src_name = get_file_name(builder->stream);
-    sprintf(cmd_buf, "\"cat %s | dot -Tpng -o %s\"", TMPFILE, filename);
+    sprintf(cmd_buf, "dot -Tpng -o %s %s", filename, TMPFILE);
     printf("%s\n", cmd_buf);
 
     system(cmd_buf);

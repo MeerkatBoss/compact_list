@@ -20,7 +20,9 @@ int main()
     push_back(&list, 30);
     pop_front(&list);
     insert_after(&list, second, 40);
-    list_dump(&list, "tmp.png");
+    list_dump(&list, "dump1.png");
+    linearize(&list);
+    list_dump(&list, "dump2.png");
 
     list_dtor(&list);
 
