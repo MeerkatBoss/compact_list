@@ -201,12 +201,4 @@ void linearize(compact_list* list);
  */
 list_iterator element_by_number(const compact_list* list, size_t num);
 
-void* abstract_linked_list_iterator_object_getter_factory_builder_getter_get_builder(void*, void*);
-
-void* abstract_linked_list_iterator_object_getter_factory_builder_build_factory(void*);
-
-void* abstract_linked_list_iterator_object_getter_factory_make_object_getter(void*);
-
-void* abstract_linked_list_iterator_object_getter_get_abstract_iterator_object(void*);
-
 #endif

@@ -6,89 +6,89 @@ nodesep=0.1
 overlap=voronoi
 bgcolor=lightsteelblue1
 node [shape=plaintext color=darkslategray]
-node0 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="springgreen">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="springgreen4"><FONT COLOR="azure"><B>node #0</B></FONT></TD></TR>
+node0 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="navajowhite">
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="peru"><FONT COLOR="azure"><B>root [0]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
-<TR><TD><I>next: </I>1</TD><TD><I>prev: </I>3</TD></TR>
+<TR><TD><I>next: </I>1</TD><TD><I>prev: </I>4</TD></TR>
 </TABLE>>]
 node1 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="springgreen">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="springgreen4"><FONT COLOR="azure"><B>node #1</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="darkslategrey"><FONT COLOR="azure"><B>head [1]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> 20</TD></TR>
 <TR><TD><I>next: </I>2</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node2 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="springgreen">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="springgreen4"><FONT COLOR="azure"><B>node #2</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="springgreen4"><FONT COLOR="azure"><B>node [2]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> 40</TD></TR>
 <TR><TD><I>next: </I>3</TD><TD><I>prev: </I>1</TD></TR>
 </TABLE>>]
 node3 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="springgreen">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="springgreen4"><FONT COLOR="azure"><B>node #3</B></FONT></TD></TR>
-<TR><TD COLSPAN="2"><I>value: </I> 30</TD></TR>
-<TR><TD><I>next: </I>0</TD><TD><I>prev: </I>2</TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="springgreen4"><FONT COLOR="azure"><B>node [3]</B></FONT></TD></TR>
+<TR><TD COLSPAN="2"><I>value: </I> 50</TD></TR>
+<TR><TD><I>next: </I>4</TD><TD><I>prev: </I>2</TD></TR>
 </TABLE>>]
-node4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #4</B></FONT></TD></TR>
-<TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
-<TR><TD><I>next: </I>5</TD><TD><I>prev: </I>0</TD></TR>
+node4 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="springgreen">
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="darkslategrey"><FONT COLOR="azure"><B>tail [4]</B></FONT></TD></TR>
+<TR><TD COLSPAN="2"><I>value: </I> 30</TD></TR>
+<TR><TD><I>next: </I>0</TD><TD><I>prev: </I>3</TD></TR>
 </TABLE>>]
 node5 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #5</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [5]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>6</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node6 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #6</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [6]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>7</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node7 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #7</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [7]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>8</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node8 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #8</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [8]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>9</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node9 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #9</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [9]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>10</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node10 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #10</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [10]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>11</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node11 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #11</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [11]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>12</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node12 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #12</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [12]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>13</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node13 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #13</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [13]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>14</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node14 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #14</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [14]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>15</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node15 [label=<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="deepskyblue">
-<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>node #15</B></FONT></TD></TR>
+<TR><TD ALIGN="CENTER" COLSPAN="2" BGCOLOR="dodgerblue2"><FONT COLOR="azure"><B>free [15]</B></FONT></TD></TR>
 <TR><TD COLSPAN="2"><I>value: </I> nan</TD></TR>
 <TR><TD><I>next: </I>0</TD><TD><I>prev: </I>0</TD></TR>
 </TABLE>>]
 node0->node1 [weight=999999 color=none]
 node0->node1 [weight=0 color=deeppink]
-node0->node3 [weight=0 color=darkviolet style=dashed]
+node0->node4 [weight=0 color=darkviolet style=dashed]
 node1->node2 [weight=999999 color=none]
 node1->node2 [weight=0 color=deeppink]
 node1->node0 [weight=0 color=darkviolet style=dashed]
@@ -96,10 +96,11 @@ node2->node3 [weight=999999 color=none]
 node2->node3 [weight=0 color=deeppink]
 node2->node1 [weight=0 color=darkviolet style=dashed]
 node3->node4 [weight=999999 color=none]
-node3->node0 [weight=0 color=deeppink]
+node3->node4 [weight=0 color=deeppink]
 node3->node2 [weight=0 color=darkviolet style=dashed]
 node4->node5 [weight=999999 color=none]
-node4->node5 [weight=0 color=midnightblue]
+node4->node0 [weight=0 color=deeppink]
+node4->node3 [weight=0 color=darkviolet style=dashed]
 node5->node6 [weight=999999 color=none]
 node5->node6 [weight=0 color=midnightblue]
 node6->node7 [weight=999999 color=none]

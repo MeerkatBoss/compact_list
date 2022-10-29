@@ -1,4 +1,4 @@
-add_library(liblist list.cpp)
+add_library(liblist list.cpp cringe.cpp)
 
 target_link_libraries(liblist PRIVATE liblogs libgraph)
 

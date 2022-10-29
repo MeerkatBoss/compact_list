@@ -20,10 +20,13 @@ static const element_t POISON     = NAN;
 #define NEXT_EDGE_COLOR "deeppink"
 #define PREV_EDGE_COLOR "darkviolet"
 #define FREE_EDGE_COLOR "midnightblue"
+#define ROOT_COLOR "navajowhite"
+#define ROOT_HEAD_COLOR "peru"
+#define SPEC_HEAD_COLOR "darkslategrey"
 
-#define NODE_FORMAT(bg, head) \
+#define NODE_FORMAT(name, bg, head) \
                         "<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\" CELLPADDING=\"4\" BGCOLOR=\"" bg "\">\n"\
-                        "<TR><TD ALIGN=\"CENTER\" COLSPAN=\"2\" BGCOLOR=\"" head "\"><FONT COLOR=\"" HEAD_FONT_COLOR "\"><B>node #%zu</B></FONT></TD></TR>\n"\
+                        "<TR><TD ALIGN=\"CENTER\" COLSPAN=\"2\" BGCOLOR=\"" head "\"><FONT COLOR=\"" HEAD_FONT_COLOR "\"><B>" name " [%zu]</B></FONT></TD></TR>\n"\
                         "<TR><TD COLSPAN=\"2\"><I>value: </I> %lg</TD></TR>\n"\
                         "<TR><TD><I>next: </I>%zu</TD><TD><I>prev: </I>%zu</TD></TR>\n"\
                         "</TABLE>"
@@ -34,26 +37,6 @@ static void try_shrink_list(compact_list* list);
 static void try_grow_list(compact_list* list);
 static void resize_list(compact_list* list, size_t new_size);
 static void memswap(void* mem1, void* mem2, size_t mem_size);
-
-struct builder
-{
-    size_t number;
-    const compact_list* list;
-};
-
-struct factory
-{
-    const compact_list* list;
-    size_t number;
-};
-
-const size_t GETTER_SIG = 0xd1ab01ca1c0c0a5;
-
-union getter
-{
-    builder bld;
-    factory fac;
-};
 
 compact_list list_ctor(void)
 {
@@ -92,7 +75,7 @@ void list_dtor(compact_list* list)
 
 list_iterator list_begin(const compact_list* list)
 {
-    LOG_ASSERT(list != NULL, return 0);
+    LOG_ASSERT(list        != NULL, return 0);
     LOG_ASSERT(list->nodes != NULL, return 0);
     return list->nodes->next;
 }
@@ -106,7 +89,6 @@ list_iterator list_end(const compact_list* list)
 
 list_iterator next_element(const compact_list* list, const list_iterator iterator)
 {
-    LOG_ASSERT(iterator != 0, return 0);
     LOG_ASSERT(list != NULL, return 0);
     LOG_ASSERT(list->nodes != NULL, return 0);
     return list->nodes[iterator].next;
@@ -114,7 +96,6 @@ list_iterator next_element(const compact_list* list, const list_iterator iterato
 
 list_iterator prev_element(const compact_list* list, const list_iterator iterator)
 {
-    LOG_ASSERT(iterator != 0, return 0);
     LOG_ASSERT(list != NULL, return 0);
     LOG_ASSERT(list->nodes != NULL, return 0);
     return list->nodes[iterator].prev;
@@ -122,7 +103,6 @@ list_iterator prev_element(const compact_list* list, const list_iterator iterato
 
 list_iterator insert_after(compact_list* list, list_iterator iterator, element_t value)
 {
-    //LOG_ASSERT(iterator != 0, return 0);
     LOG_ASSERT(list != NULL, return 0);
     LOG_ASSERT(list->nodes != NULL, return 0);
 
@@ -159,7 +139,7 @@ list_iterator insert_before(compact_list* list, list_iterator iterator, element_
     list_iterator added = list->free;
     list_iterator prv = prev_element(list, iterator);
 
-    if(!(prv + 1 == added & added + 1 == cur))
+    if(!(prv + 1 == added && added + 1 == cur))
         list->is_linear = 0;
 
     list->free = next_element(list, list->free);
@@ -237,6 +217,9 @@ void pop_front(compact_list* list)
 
 void linearize(compact_list* list)
 {
+    if (list->is_linear)
+        return;
+
     size_t cnt = 1;
     for (list_iterator it = list_begin(list); it != 0; it = next_element(list, it), cnt++)
     {
@@ -269,6 +252,9 @@ void linearize(compact_list* list)
     }
 
     list->free = list->size + 1;
+    list->is_linear = 1;
+
+    try_shrink_list(list);
 }
 
 list_iterator element_by_number(const compact_list* list, size_t num)
@@ -324,15 +310,26 @@ void list_dump(compact_list* list, const char* filename)
     
     size_t *node_num = (size_t*) calloc(list->capacity, sizeof(*node_num));
 
-    for (size_t i = 0; i < list->capacity; i++)
+    node_num[0] = add_node(&builder,
+            "label=<"NODE_FORMAT("root", ROOT_COLOR, ROOT_HEAD_COLOR)">",
+            NODE_ARGS(0, list->nodes[0]));
+    for (size_t i = 1; i < list->capacity; i++)
     {
         if (list->nodes[i].is_free)
             node_num[i] = add_node(&builder,
-                "label=<"NODE_FORMAT(FREE_COLOR, FREE_HEAD_COLOR)">",
+                "label=<"NODE_FORMAT("free", FREE_COLOR, FREE_HEAD_COLOR)">",
+                NODE_ARGS(i, list->nodes[i]));
+        else if (i == list_begin(list))
+            node_num[i] = add_node(&builder,
+                "label=<"NODE_FORMAT("head", NODE_COLOR, SPEC_HEAD_COLOR)">",
+                NODE_ARGS(i, list->nodes[i]));
+        else if (i == list_end(list))
+            node_num[i] = add_node(&builder,
+                "label=<"NODE_FORMAT("tail", NODE_COLOR, SPEC_HEAD_COLOR)">",
                 NODE_ARGS(i, list->nodes[i]));
         else
             node_num[i] = add_node(&builder,
-                "label=<"NODE_FORMAT(NODE_COLOR, NODE_HEAD_COLOR)">",
+                "label=<"NODE_FORMAT("node", NODE_COLOR, NODE_HEAD_COLOR)">",
                 NODE_ARGS(i, list->nodes[i]));
     }
 
@@ -358,54 +355,6 @@ void list_dump(compact_list* list, const char* filename)
     free(node_num);
 }
 
-void* abstract_linked_list_iterator_object_getter_factory_builder_getter_get_builder(void* param1, void* param2)
-{
-    builder* result = (builder*)calloc(1, sizeof(*result));
-    *result = {
-        .number = (size_t)param2,
-        .list = (const compact_list*)param1
-    };
-    return (void*) result;
-}
-
-void* abstract_linked_list_iterator_object_getter_factory_builder_build_factory(void* param)
-{
-    builder* bld = (builder*) param;
-    const compact_list* list = bld->list;
-    size_t num = bld->number;
-
-    factory* result = (factory*) param;
-    *result = {
-        .list = list,
-        .number = num
-    };
-
-    return (void*) result;
-}
-
-void* abstract_linked_list_iterator_object_getter_factory_make_object_getter(void* param)
-{
-    getter* gtr = (getter*) param;
-    gtr->fac.number ^= GETTER_SIG;
-    return (void*) gtr;
-}
-
-void* abstract_linked_list_iterator_object_getter_get_abstract_iterator_object(void* param)
-{
-    getter* gtr = (getter*) param;
-    size_t number = gtr->fac.number ^ GETTER_SIG;
-    const compact_list* list = gtr->fac.list;
-    free(param);
-
-    size_t cnt = 0;
-    for (list_iterator it = list_begin(list); it != 0; it = next_element(list, it), cnt++)
-    {
-        if (cnt == number)
-            return (void*) it;
-    }
-    return NULL;
-}
-
 static void try_shrink_list(compact_list* list)
 {
     if (!list->is_linear) return;
@@ -414,8 +363,13 @@ static void try_shrink_list(compact_list* list)
 
     if ((list->size+2) * growth_coeff_ * growth_coeff_ > list->capacity)
         return;
+    
+    size_t new_size = (list->size+2)*growth_coeff_;
 
-    resize_list(list, (list->size+2) * growth_coeff_);
+    if (list_begin(list) + list->size + 1 < new_size)
+        new_size = list_begin(list) + list->size + 1;
+
+    resize_list(list, new_size);
 }
 
 static void try_grow_list(compact_list* list)
@@ -445,7 +399,10 @@ static void resize_list(compact_list* list, size_t new_size)
     list_iterator nxt = 0;
     while((nxt = next_element(list, lst_free)))
         lst_free = nxt;
-    list->nodes[lst_free].next = old_size;
+    if (old_size > new_size)
+        list->nodes[lst_free].next = 0;
+    else
+        list->nodes[lst_free].next = old_size;
 }
 
 static void memswap(void* mem1, void* mem2, size_t mem_size)
