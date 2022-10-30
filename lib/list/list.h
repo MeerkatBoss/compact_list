@@ -1,3 +1,14 @@
+/**
+ * @file list.h
+ * @author MeerkatBoss (solodovnikov.ia@phystech.edu)
+ * @brief List data structure
+ * @version 0.1
+ * @date 2022-10-30
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+
 #ifndef COMPACT_LIST_H
 #define COMPACT_LIST_H
 
